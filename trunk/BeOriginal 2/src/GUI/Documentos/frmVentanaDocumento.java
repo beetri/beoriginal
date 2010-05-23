@@ -230,7 +230,7 @@ public class frmVentanaDocumento extends javax.swing.JFrame {
             ventanaEvaluacion.setDocumento("", txtRuta.getText(), fichero);
             this.dispose();
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this,"asd");
+            this.dispose();
         }
 }//GEN-LAST:event_btnMostrarRuta1ActionPerformed
 
