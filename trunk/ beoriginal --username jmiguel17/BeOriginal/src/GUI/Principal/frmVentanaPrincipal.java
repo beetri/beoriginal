@@ -4,6 +4,7 @@ import GUI.Seguridad.*;
 import GUI.Documentos.*;
 import GUI.Reportes.*;
 import GUI.Evaluacion.*;
+import GUI.Auditoria.*;
 
 public class frmVentanaPrincipal extends javax.swing.JFrame {
         public frmVentanaPrincipal(){
