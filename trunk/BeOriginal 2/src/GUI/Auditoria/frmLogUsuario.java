@@ -6,22 +6,114 @@
 /*
  * frmLogUsuario.java
  *
- * Created on 05/05/2010, 10:19:07 PM
+ * Created on 30/11/2009, 03:18:08 AM
  */
 
 package GUI.Auditoria;
 
+import BusinessEntity.*;
+import BusinessLogic.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author Administador
+ * @author Administrador
  */
 public class frmLogUsuario extends javax.swing.JFrame {
-
-    /** Creates new form frmLogUsuario */
+    public String Mensaje = "";
+    public UsuarioBE objUsuarioBE;
+    DateFormat formato= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   /** Creates new form frmLogUsuario */
     public frmLogUsuario() {
         initComponents();
+        //llenarTabla();
     }
+    public frmLogUsuario(UsuarioBE objUsuarioBEAux){
+        initComponents();
+        //llenarTabla();
+        objUsuarioBE = objUsuarioBEAux;
 
+    }
+    public boolean validar() {
+        boolean blnAux = true;
+
+        if (this.jdtFechaIngreso.getDate()!=null && this.jdtFechaIngreso.getDate()!=null) {
+            if (this.jdtFechaSalida.getDate().before(this.jdtFechaSalida.getDate())) {
+                blnAux = false;
+                Mensaje = "La fecha máxima debe ser mayor o igual que la fecha mínima en el rango.";
+            }
+        }
+
+        return blnAux;
+    }
+    private Date aDate(String fecha) {
+        SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date fecharesult = null;
+        try {
+          fecharesult = formatoDelTexto.parse(fecha);
+
+           }
+        catch (Exception ex) {
+             ex.printStackTrace();
+         }
+         return fecharesult;
+    }
+    private String fechaACadena(Date objDate){
+        SimpleDateFormat strFecha=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formato.format(objDate);
+
+    }
+    private void llenarTabla(){
+        List<LogUsuarioBE> lstLogUsuarioBE;
+        LogUsuarioBL objLogUsuarioBL = new LogUsuarioBL();
+        LogUsuarioBE objLogUsuarioAuxBE = new LogUsuarioBE();
+        UsuarioBE objUsuarioAuxBE = new UsuarioBE();
+        PerfilBE objPerfilAuxBE = new PerfilBE();
+        objUsuarioAuxBE.setNombre(this.txtNombre.getText());
+        objUsuarioAuxBE.setUsuario(this.txtUsuario.getText());
+        objUsuarioAuxBE.setEstado("Activo");
+       
+//        Date fechaingreso = aDate(objLogUsuarioAuxBE.getFechaIngreso().toString());
+//        objLogUsuarioAuxBE.setFechaIngreso(fechaingreso);
+        objLogUsuarioAuxBE.setObjUsuarioBE(objUsuarioAuxBE);
+        objLogUsuarioAuxBE.setFechaIngreso(this.jdtFechaIngreso.getDate());
+        objLogUsuarioAuxBE.setFechaSalida(this.jdtFechaSalida.getDate());
+
+        if (validar()) {
+            lstLogUsuarioBE = objLogUsuarioBL.buscarLogs(objLogUsuarioAuxBE);
+            // llenar la tabla
+            if (!lstLogUsuarioBE.isEmpty()){
+                DefaultTableModel model = (DefaultTableModel) this.tlbLog.getModel();
+                model.setRowCount(0) ;
+                String fechaingreso;
+                for (LogUsuarioBE obj : lstLogUsuarioBE){
+                    fechaingreso=fechaACadena(obj.getFechaIngreso());
+
+                    obj.setFechaMia(fechaingreso);
+                       Object[] newRow = {
+                       obj.getCodLog(),
+                       //obj.getObjUsuarioBE().getNombre(),
+                       obj.getObjUsuarioBE().getNombre()+' '+obj.getObjUsuarioBE().getApellidoPaterno(),
+                       obj.getObjUsuarioBE().getUsuario(),
+                       obj.getIP(),
+                       obj.getMAC(),
+                       obj.getFechaMia(),
+                       obj.getObjUsuarioBE().getEstado()};
+                       model.addRow(newRow);
+                }
+                this.tlbLog.setModel(model);
+                Mensaje = "Búsqueda satisfactoria.";
+            }
+            else{
+                Mensaje = "No se encontró información que mostrar.";
+            }
+        }
+     }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -31,70 +123,26 @@ public class frmLogUsuario extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlResultado = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tlbLog = new javax.swing.JTable();
-        btnCerrar = new javax.swing.JButton();
         pnlLog = new javax.swing.JPanel();
         lblNombre = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         txtUsuario = new javax.swing.JTextField();
         pnlFechas = new javax.swing.JPanel();
+        jdtFechaIngreso = new com.toedter.calendar.JDateChooser();
+        jdtFechaSalida = new com.toedter.calendar.JDateChooser();
         lblFechaInicio = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblFechaFin = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnCerrar = new javax.swing.JButton();
+        pnlResultado = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tlbLog = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-
-        pnlResultado.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultado de la Busqueda"));
-
-        tlbLog.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Cod", "Nombre", "Usuario", "IP", "Mac", "Fecha Ingreso", "Estado"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tlbLog);
-
-        javax.swing.GroupLayout pnlResultadoLayout = new javax.swing.GroupLayout(pnlResultado);
-        pnlResultado.setLayout(pnlResultadoLayout);
-        pnlResultadoLayout.setHorizontalGroup(
-            pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlResultadoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 639, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
-        pnlResultadoLayout.setVerticalGroup(
-            pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlResultadoLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
-        );
-
-        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Seguridad/Close-icon.png"))); // NOI18N
-        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCerrarActionPerformed(evt);
-            }
-        });
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Log de Usuario");
 
         pnlLog.setBorder(javax.swing.BorderFactory.createTitledBorder("Parametro de Busqueda de Logs"));
 
@@ -117,17 +165,24 @@ public class frmLogUsuario extends javax.swing.JFrame {
                     .addComponent(lblFechaInicio)
                     .addComponent(jLabel2)
                     .addComponent(lblFechaFin))
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlFechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jdtFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .addComponent(jdtFechaSalida, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlFechasLayout.setVerticalGroup(
             pnlFechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFechasLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(lblFechaInicio)
-                .addGap(14, 14, 14)
+                .addContainerGap()
+                .addGroup(pnlFechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblFechaInicio)
+                    .addComponent(jdtFechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlFechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2)
-                    .addComponent(lblFechaFin))
+                    .addComponent(lblFechaFin)
+                    .addComponent(jdtFechaSalida, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -167,19 +222,81 @@ public class frmLogUsuario extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Seguridad/find.png"))); // NOI18N
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/limpiar.png"))); // NOI18N
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/buscar3.png"))); // NOI18N
+        btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
             }
         });
 
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Auditoria/erase_icon.gif"))); // NOI18N
-        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/cancelar3.png"))); // NOI18N
+        btnCerrar.setText("Cerrar");
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimpiarActionPerformed(evt);
+                btnCerrarActionPerformed(evt);
             }
         });
+
+        pnlResultado.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultado de la Busqueda"));
+
+        tlbLog.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Cod", "Nombre", "Usuario", "IP", "Mac", "Fecha Ingreso", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tlbLog);
+        tlbLog.getColumnModel().getColumn(0).setResizable(false);
+        tlbLog.getColumnModel().getColumn(0).setPreferredWidth(75);
+        tlbLog.getColumnModel().getColumn(1).setResizable(false);
+        tlbLog.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tlbLog.getColumnModel().getColumn(2).setResizable(false);
+        tlbLog.getColumnModel().getColumn(2).setPreferredWidth(200);
+        tlbLog.getColumnModel().getColumn(3).setResizable(false);
+        tlbLog.getColumnModel().getColumn(3).setPreferredWidth(200);
+        tlbLog.getColumnModel().getColumn(4).setResizable(false);
+        tlbLog.getColumnModel().getColumn(4).setPreferredWidth(200);
+        tlbLog.getColumnModel().getColumn(5).setResizable(false);
+        tlbLog.getColumnModel().getColumn(5).setPreferredWidth(250);
+        tlbLog.getColumnModel().getColumn(6).setResizable(false);
+        tlbLog.getColumnModel().getColumn(6).setPreferredWidth(200);
+
+        javax.swing.GroupLayout pnlResultadoLayout = new javax.swing.GroupLayout(pnlResultado);
+        pnlResultado.setLayout(pnlResultadoLayout);
+        pnlResultadoLayout.setHorizontalGroup(
+            pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlResultadoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE))
+        );
+        pnlResultadoLayout.setVerticalGroup(
+            pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlResultadoLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,52 +305,47 @@ public class frmLogUsuario extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlResultado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(8, 8, 8))
-                        .addComponent(pnlLog, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                    .addComponent(pnlLog, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnBuscar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLimpiar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCerrar)))
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(pnlResultado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlLog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCerrar)
+                    .addComponent(btnLimpiar)
+                    .addComponent(btnBuscar))
+                .addGap(18, 18, 18)
+                .addComponent(pnlLog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(pnlResultado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        llenarTabla();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         // TODO add your handling code here:
         dispose();
-        
-}//GEN-LAST:event_btnCerrarActionPerformed
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-        
-}//GEN-LAST:event_btnBuscarActionPerformed
+    }//GEN-LAST:event_btnCerrarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         // TODO add your handling code here:
-      this.txtNombre.setText("");
-      this.txtUsuario.setText("");
-}//GEN-LAST:event_btnLimpiarActionPerformed
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
     /**
     * @param args the command line arguments
@@ -252,6 +364,8 @@ public class frmLogUsuario extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser jdtFechaIngreso;
+    private com.toedter.calendar.JDateChooser jdtFechaSalida;
     private javax.swing.JLabel lblFechaFin;
     private javax.swing.JLabel lblFechaInicio;
     private javax.swing.JLabel lblNombre;

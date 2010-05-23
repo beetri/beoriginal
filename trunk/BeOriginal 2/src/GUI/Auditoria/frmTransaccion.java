@@ -6,18 +6,24 @@
 /*
  * frmTransaccion.java
  *
- * Created on 05/05/2010, 10:19:14 PM
+ * Created on 30/11/2009, 03:18:18 AM
  */
 
 package GUI.Auditoria;
 
+import BusinessEntity.*;
+import BusinessLogic.*;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author Administador
+ * @author Bernabe Yanac
  */
 public class frmTransaccion extends javax.swing.JFrame {
 
     /** Creates new form frmTransaccion */
+    private String Mensaje= "";
     public frmTransaccion() {
         initComponents();
     }
@@ -41,12 +47,13 @@ public class frmTransaccion extends javax.swing.JFrame {
         pnlResultado = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tlbTransaccion = new javax.swing.JTable();
-        jToolBar1 = new javax.swing.JToolBar();
-        btnBuscar = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
         btnCerrar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Transaccion");
+        setName("Transacciones"); // NOI18N
         setResizable(false);
 
         pnlTransacciones.setBorder(javax.swing.BorderFactory.createTitledBorder("Parametro de Busqueda de Transacciones"));
@@ -117,6 +124,18 @@ public class frmTransaccion extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(tlbTransaccion);
+        tlbTransaccion.getColumnModel().getColumn(0).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tlbTransaccion.getColumnModel().getColumn(1).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tlbTransaccion.getColumnModel().getColumn(2).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(2).setPreferredWidth(200);
+        tlbTransaccion.getColumnModel().getColumn(3).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(3).setPreferredWidth(200);
+        tlbTransaccion.getColumnModel().getColumn(4).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(4).setPreferredWidth(170);
+        tlbTransaccion.getColumnModel().getColumn(5).setResizable(false);
+        tlbTransaccion.getColumnModel().getColumn(5).setPreferredWidth(300);
 
         javax.swing.GroupLayout pnlResultadoLayout = new javax.swing.GroupLayout(pnlResultado);
         pnlResultado.setLayout(pnlResultadoLayout);
@@ -124,7 +143,7 @@ public class frmTransaccion extends javax.swing.JFrame {
             pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlResultadoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE))
         );
         pnlResultadoLayout.setVerticalGroup(
             pnlResultadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,38 +153,22 @@ public class frmTransaccion extends javax.swing.JFrame {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Seguridad/find.png"))); // NOI18N
-        btnBuscar.setFocusable(false);
-        btnBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnBuscar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnBuscar);
-
-        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Auditoria/erase_icon.gif"))); // NOI18N
-        btnLimpiar.setFocusable(false);
-        btnLimpiar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnLimpiar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimpiarActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnLimpiar);
-
-        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Seguridad/Close-icon.png"))); // NOI18N
-        btnCerrar.setFocusable(false);
-        btnCerrar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnCerrar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/cancelar3.png"))); // NOI18N
+        btnCerrar.setText("Cerrar");
         btnCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCerrarActionPerformed(evt);
+            }
+        });
+
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/limpiar.png"))); // NOI18N
+        btnLimpiar.setText("Limpiar");
+
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/alkhorezmi/resources/Iconos_Alkhorezmi/buscar3.png"))); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
             }
         });
 
@@ -174,50 +177,85 @@ public class frmTransaccion extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlTransacciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pnlTransacciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pnlResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCerrar)))
+                        .addGap(129, 129, 129)
+                        .addComponent(btnBuscar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLimpiar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCerrar))
+                    .addComponent(pnlResultado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCerrar)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(btnLimpiar)
+                    .addComponent(btnBuscar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlTransacciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pnlResultado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    
-}//GEN-LAST:event_btnBuscarActionPerformed
-
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         // TODO add your handling code here:
         dispose();
-}//GEN-LAST:event_btnCerrarActionPerformed
+    }//GEN-LAST:event_btnCerrarActionPerformed
+   private void llenarTabla(){
+         List<TransaccionBE> lstTransaccionBE;
+        TransaccionBL objTransaccionBL = new TransaccionBL();
+        TransaccionBE objTransaccionAuxBE = new TransaccionBE();
+        UsuarioBE objUsuarioAuxBE = new UsuarioBE();
+        objUsuarioAuxBE.setUsuario(this.txtUsuario.getText().toString());
+        objTransaccionAuxBE.setObjUsuarioBE(objUsuarioAuxBE);
+        String CodLog ="";
+        CodLog = (this.txtCodigo.getText().toString());
+        if (!CodLog.equals( "" ))
+            objTransaccionAuxBE.setCodlog(Integer.parseInt(CodLog));
+        objTransaccionAuxBE.setAccion(this.cmbAccion.getSelectedItem().toString());
+        LogUsuarioBE objLogUsuarioAuxBE = new LogUsuarioBE();
+        objTransaccionAuxBE.setObjLogUsuarioBE(objLogUsuarioAuxBE);
+        //objTransaccionAuxBE.setFecha(this.jdtFechaInicio.getDate());
+//        if (validar()) {
+            lstTransaccionBE = objTransaccionBL.buscarTransaccion(objTransaccionAuxBE);
+            // llenar la tabla
+            if (!lstTransaccionBE.isEmpty()){
+                DefaultTableModel model = (DefaultTableModel) this.tlbTransaccion.getModel();
+                model.setRowCount(0) ;
 
-    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+                for (TransaccionBE obj : lstTransaccionBE){
+                       Object[] newRow = {
+                       obj.getCodlog(),
+                       obj.getObjUsuarioBE().getUsuario(),
+                       obj.getAccion(),
+                       obj.getConsultaRealizada(),
+                       obj.getObjLogUsuarioBE().getIP(),
+                       obj.getFecha()};
+                       model.addRow(newRow);
+                }
+                this.tlbTransaccion.setModel(model);
+                Mensaje = "Búsqueda satisfactoria.";
+            }
+            else{
+                Mensaje = "No se encontró información que mostrar.";
+        }
+ }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
-        this.txtCodigo.setText("");
-        this.txtUsuario.setText("");
-    }//GEN-LAST:event_btnLimpiarActionPerformed
+        llenarTabla();
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
     /**
     * @param args the command line arguments
@@ -236,7 +274,6 @@ public class frmTransaccion extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox cmbAccion;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblAccion;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblUsuario;
