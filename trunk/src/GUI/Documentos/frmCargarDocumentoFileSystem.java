@@ -1,0 +1,190 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * frmCargarDocumentoFileSystem.java
+ *
+ * Created on 30/05/2010, 04:32:56 PM
+ */
+
+package GUI.Documentos;
+import BusinessEntity.Documentos.DocumentoBE;
+import BusinessEntity.Documentos.TextoBE;
+import BusinessLogic.Documentos.DocumentoBL;
+import BusinessLogic.Documentos.TextoBL;
+import Conexion.Conexion;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+
+
+      // not file or directory, output error message
+/**
+ *
+ * @author Harvey Rivadeneyra
+ */
+public class frmCargarDocumentoFileSystem extends javax.swing.JFrame
+//{
+
+    /** Creates new form frmCargarDocumentoFileSystem */
+//    public frmCargarDocumentoFileSystem() {
+//        initComponents();
+//    }
+   implements ActionListener {
+
+   private JTextField enterField;
+   private JTextArea outputArea;
+   private DocumentoBL objDocumentoBL = new DocumentoBL();
+   private TextoBL objTextoBL = new TextoBL();
+   private DocumentoBE objDocumentoBE;
+   private TextoBE objTextoBE;
+    private Conexion Conexion;
+    private Statement comando;
+    private String query;
+    DateFormat formato= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+   // set up GUI
+   public frmCargarDocumentoFileSystem()
+   {
+      super( "Cargar Documento Local" );
+
+      enterField = new JTextField( "Ingrese ruta y nombre del archivo luego presiione enter" );
+      enterField.addActionListener( this );
+      outputArea = new JTextArea();
+
+      ScrollPane scrollPane = new ScrollPane();
+      scrollPane.add( outputArea );
+
+      Container container = getContentPane();
+      container.add( enterField, BorderLayout.NORTH );
+      container.add( scrollPane, BorderLayout.CENTER );
+
+      setSize( 600, 600 );
+      setVisible( true );
+
+   } // end constructor
+
+   // display information about file user specifies
+   public void actionPerformed( ActionEvent actionEvent )
+   {
+      File name = new File( actionEvent.getActionCommand() );
+      objDocumentoBE = new DocumentoBE();
+      objTextoBE = new TextoBE();
+      // if name exists, output information about it
+      if ( name.exists() ) {
+         objDocumentoBE.setvchTitulo(name.getName());
+         objDocumentoBL.insertarDocumento(objDocumentoBE);
+
+
+//         outputArea.setText( name.getName() + " exists\n" +
+//            ( name.isFile() ? "is a file\n" : "is not a file\n" ) +
+//            ( name.isDirectory() ? "is a directory\n" :
+//               "is not a directory\n" ) +
+//            ( name.isAbsolute() ? "is absolute path\n" :
+//               "is not absolute path\n" ) + "Last modified: " +
+//            name.lastModified() + "\nLength: " + name.length() +
+//            "\nPath: " + name.getPath() + "\nAbsolute path: " +
+//            name.getAbsolutePath() + "\nParent: " + name.getParent() );
+
+         // output information if name is a file
+         if ( name.isFile() ) {
+
+            // append contents of file to outputArea
+            try {
+               BufferedReader input = new BufferedReader(
+                  new FileReader( name ) );
+               StringBuffer buffer = new StringBuffer();
+               String text;
+               outputArea.append( "\n\n" );
+
+               while ( ( text = input.readLine() ) != null )
+                  buffer.append( text + "\n" );
+
+               outputArea.append( buffer.toString() );
+               objTextoBE.setvchTexto( buffer.toString());
+               objTextoBL.insertarTexto(objTextoBE);
+            }
+
+            // process file processing problems
+            catch( IOException ioException ) {
+               JOptionPane.showMessageDialog( this, "ERROR DE ARCHIVO",
+                  "FILE ERROR", JOptionPane.ERROR_MESSAGE );
+            }
+
+         } // end if
+
+         // output directory listing
+         else if ( name.isDirectory() ) {
+            String directory[] = name.list();
+
+            outputArea.append( "\n\nDirectory contents:\n");
+
+            for ( int i = 0; i < directory.length; i++ )
+               outputArea.append( directory[ i ] + "\n" );
+         }
+
+      } // end outer if
+      else {
+         JOptionPane.showMessageDialog( this,
+            actionEvent.getActionCommand() + " Not Existe",
+            "ERROR", JOptionPane.ERROR_MESSAGE );
+      }
+
+   } // end method actionPerformed
+    private String fechaACadena(Date objDate){
+//        SimpleDateFormat strFecha=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formato.format(objDate);
+
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+    * @param args the command line arguments
+    */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new frmCargarDocumentoFileSystem().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
+
+} // end class frmCargarDocumentoFileSystem
