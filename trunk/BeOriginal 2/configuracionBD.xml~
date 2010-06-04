@@ -1,9 +1,0 @@
-<ArchivoConexionBD>
-<driver>org.postgresql.Driver</driver>
-<servidor>quilla.lab.inf.pucp.edu.pe</servidor>
-<puerto>1042</puerto>
-<basedatos>jj</basedatos>
-<esquema>grupo</esquema>
-<usuario>postgres</usuario>
-<password>sistema</password>
-</ArchivoConexionBD>
