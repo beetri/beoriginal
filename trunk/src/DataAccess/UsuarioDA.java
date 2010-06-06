@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 /**
  *
- * @author Bernabe
+ * @author Prueba google code
  */
 public class UsuarioDA {
 private Conexion cnxConexion;
